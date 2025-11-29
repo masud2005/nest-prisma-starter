@@ -1,0 +1,37 @@
+model User {
+    id String @id @default(uuid())
+
+    // Identity
+    email    String  @unique
+    name     String?
+    password String
+
+    // Settings
+    role       UserRole   @default(USER)
+    status     UserStatus @default(ACTIVE)
+    isVerified Boolean    @default(false)
+
+    // Activity
+    lastLoginAt DateTime?
+    lastActiveAt DateTime?
+    
+    // Avatar
+    avatarUrl String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("users")
+}
+
+enum UserRole {
+    SUPER_ADMIN
+    ADMIN
+    USER
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    DELETED
+}
