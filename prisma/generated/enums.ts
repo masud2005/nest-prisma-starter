@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const OtpType = {
+  VERIFICATION: 'VERIFICATION',
+  RESET_PASSWORD: 'RESET_PASSWORD'
+} as const
+
+export type OtpType = (typeof OtpType)[keyof typeof OtpType]
+
+
 export const UserRole = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
