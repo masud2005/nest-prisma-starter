@@ -1,13 +1,15 @@
 import { PrismaService } from "@/lib/prisma/prisma.service";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { RegisterDto } from "../dto/register.dto";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
+import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 
 @Injectable()
 export class AuthRegisterService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly utils: AuthUtilsService,
+        private readonly authMailService: AuthMailService
     ) { }
 
     async register(dto: RegisterDto) {
@@ -19,7 +21,7 @@ export class AuthRegisterService {
         });
 
         if (existingUser) {
-            throw new Error('User already exists with this email');
+            throw new BadRequestException('User already exists with this email');
         }
 
         // Create new user
@@ -35,11 +37,19 @@ export class AuthRegisterService {
         const otp = await this.utils.generateOTPAndSave(newUser.id, 'VERIFICATION')
 
         // Send verification email
-        
+        await this.authMailService.sendVerificationEmail(
+            email,
+            otp.toString(),
+            {
+                subject: 'Verify your email',
+                message:
+                    'Welcome to our platform! Your account has been successfully created.',
+            }
+        )
 
         return {
-            data: newUser,
-            message: 'User created successfully'
+            email: newUser.email,
+            message: `Registration successful. A verification email has been sent to ${newUser.email}.`
         }
     }
 }

@@ -3,9 +3,10 @@ import { AuthController } from './auth.controller';
 import { AuthRegisterService } from './services/auth-register.service';
 import { UtilsModule } from '@/lib/utils/utils.module';
 import { AuthLoginService } from './services/auth-login.service';
+import { MailModule } from '@/lib/mail/mail.module';
 
 @Module({
-  imports: [UtilsModule],
+  imports: [UtilsModule, MailModule],
   controllers: [AuthController],
   providers: [AuthRegisterService, AuthLoginService]
 })
