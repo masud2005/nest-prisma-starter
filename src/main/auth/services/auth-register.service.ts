@@ -33,7 +33,9 @@ export class AuthRegisterService {
 
         // Generate Otp and Save
         const otp = await this.utils.generateOTPAndSave(newUser.id, 'VERIFICATION')
-        console.log(otp);
+
+        // Send verification email
+        
 
         return {
             data: newUser,
