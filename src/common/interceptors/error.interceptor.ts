@@ -8,6 +8,7 @@ import {
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { errorResponse } from '../response/errorResponse';
+import { AppError } from '../exceptions/app-error';
 
 @Injectable()
 export class ErrorInterceptor implements NestInterceptor {
@@ -36,17 +37,18 @@ export class ErrorInterceptor implements NestInterceptor {
                 let statusCode = 500;
                 let message: string | string[] = 'Something went wrong';
 
-                if (error instanceof HttpException) {
+                if (error instanceof AppError) {
+                    statusCode = error.statusCode;
+                    message = error.message;
+                } else if (error instanceof HttpException) {
                     statusCode = error.getStatus();
                     const response = error.getResponse();
-
-                    if (typeof response === 'string') {
-                        message = response;
-                    } else {
-                        message = (response as any).message || message;
-                    }
+                    message =
+                        typeof response === 'string'
+                            ? response
+                            : (response as any).message || message;
                 }
-
+                
                 return throwError(() =>
                     errorResponse(message, statusCode, error.stack),
                 );

@@ -5,6 +5,7 @@ import { LoginDto } from "../dto/login.dto";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 import { sendResponse } from "@/common/response/sendResponse";
 import { errorResponse } from "@/common/response/errorResponse";
+import { AppError } from "@/common/exceptions/app-error";
 
 @Injectable()
 export class AuthLoginService {
@@ -24,15 +25,13 @@ export class AuthLoginService {
         })
 
         if (!user) {
-            // throw new BadRequestException('User not found');
-            // return errorResponse('User not found', 404);
-            return { message: 'User not found', statusCode: 404 }
+            throw new AppError('User not found', 404);
         }
 
         const isPasswordMatch = await this.utils.compare(password, user.password);
 
         if (!isPasswordMatch) {
-            throw new BadRequestException('Invalid password');
+            throw new AppError('Invalid credentials', 401);
         }
 
         // User not verified
