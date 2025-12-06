@@ -3,6 +3,8 @@ import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { LoginDto } from "../dto/login.dto";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
+import { sendResponse } from "@/common/response/sendResponse";
+import { errorResponse } from "@/common/response/errorResponse";
 
 @Injectable()
 export class AuthLoginService {
@@ -22,7 +24,9 @@ export class AuthLoginService {
         })
 
         if (!user) {
-            throw new BadRequestException('User not found');
+            // throw new BadRequestException('User not found');
+            // return errorResponse('User not found', 404);
+            return { message: 'User not found', statusCode: 404 }
         }
 
         const isPasswordMatch = await this.utils.compare(password, user.password);
@@ -54,9 +58,17 @@ export class AuthLoginService {
         })
 
 
-        return {
-            data: updatedUser,
-            message: 'User logged in successfully'
-        }
+        // return {
+        //     data: updatedUser,
+        //     message: 'User logged in successfully',
+        //     statusCode: 200
+        // }
+        return sendResponse(
+            updatedUser,
+            {
+                message: 'User logged in successfully',
+                statusCode: 200,
+            }
+        );
     }
 }

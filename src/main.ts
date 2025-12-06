@@ -1,10 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalInterceptors(
+    new ResponseInterceptor(),
+    new ErrorInterceptor(),
+  );
 
   // * Swagger config with Bearer Auth
   const config = new DocumentBuilder()
