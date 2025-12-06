@@ -9,7 +9,7 @@ import {
 
 export class RegisterDto {
   @ApiProperty({
-    example: 'masud@gmail.com',
+    example: 'masud.softvenceomega@gmail.com',
     description: 'Valid email address',
   })
   @IsEmail({}, { message: 'Please provide a valid email address' })

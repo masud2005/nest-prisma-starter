@@ -1,17 +1,24 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "OtpType" AS ENUM ('VERIFICATION', 'RESET_PASSWORD');
 
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'USER');
 
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'DELETED');
 
--- DropTable
-DROP TABLE "User";
+-- CreateTable
+CREATE TABLE "UserOtp" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "type" "OtpType" NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "UserOtp_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -33,3 +40,6 @@ CREATE TABLE "users" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- AddForeignKey
+ALTER TABLE "UserOtp" ADD CONSTRAINT "UserOtp_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

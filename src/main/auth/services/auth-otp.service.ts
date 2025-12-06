@@ -1,6 +1,6 @@
 import { PrismaService } from "@/lib/prisma/prisma.service";
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { VerifyOtpDto } from "../dto/otp.dot";
+import { ResendOtpDto, VerifyOtpDto } from "../dto/otp.dto";
 import { OtpType } from "@prisma";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 
@@ -36,7 +36,7 @@ export class AuthOtpService {
                 createdAt: 'desc'
             }
         })
-        console.log(latestOtp);
+
         // Check if otp exists
         if (!latestOtp) {
             throw new BadRequestException('OTP is not set. Please request a new one.');
@@ -84,6 +84,41 @@ export class AuthOtpService {
         return {
             user: user,
             message: 'OTP verified successfully'
+        }
+    }
+
+    async resendOtp({ email, type }: ResendOtpDto) {
+        // Check if user exists
+        const user = await this.prisma.client.user.findUnique({
+            where: {
+                email
+            }
+        })
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        // if user is already verified
+        if (user.isVerified && type === OtpType.VERIFICATION) {
+            throw new BadRequestException('User is already verified')
+        }
+
+        // Delete existing unexpired OTPs is this type
+        await this.prisma.client.userOtp.deleteMany({
+            where: {
+                userId: user.id,
+                type,
+                expiresAt: { gt: new Date() }
+            }
+        })
+
+        // Generate new OTP and hash
+        const otp = await this.utils.generateOTPAndSave(user?.id, type)
+
+        try {
+            
+        } catch (error) {
+            console.log(error);
         }
     }
 }

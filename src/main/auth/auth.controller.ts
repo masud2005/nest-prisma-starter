@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthLoginService } from './services/auth-login.service';
-import { VerifyOtpDto } from './dto/otp.dot';
+import { VerifyOtpDto } from './dto/otp.dto';
 import { AuthOtpService } from './services/auth-otp.service';
 
 @Controller('auth')

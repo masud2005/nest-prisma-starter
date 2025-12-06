@@ -14,6 +14,7 @@ export class AuthRegisterService {
 
     async register(dto: RegisterDto) {
         const { email, name, password } = dto;
+        console.log(email, name, password);
 
         // Check if user email already exists
         const existingUser = await this.prisma.client.user.findUnique({
