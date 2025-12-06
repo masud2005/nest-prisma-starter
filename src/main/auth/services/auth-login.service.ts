@@ -1,13 +1,15 @@
 import { PrismaService } from "@/lib/prisma/prisma.service";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { LoginDto } from "../dto/login.dto";
+import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 
 @Injectable()
 export class AuthLoginService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly utils: AuthUtilsService,
+        private readonly authMailService: AuthMailService
     ) { }
 
     async login(dto: LoginDto) {
@@ -19,14 +21,25 @@ export class AuthLoginService {
             }
         })
 
-        if(!user) {
-            throw new Error('User not found');
+        if (!user) {
+            throw new BadRequestException('User not found');
         }
 
         const isPasswordMatch = await this.utils.compare(password, user.password);
 
-        if(!isPasswordMatch) {
-            throw new Error('Invalid password');
+        if (!isPasswordMatch) {
+            throw new BadRequestException('Invalid password');
+        }
+
+        // User not verified
+        if (!user.isVerified) {
+            const otp = await this.utils.generateOTPAndSave(user.id, 'VERIFICATION');
+
+            await this.authMailService.sendVerificationEmail(email, otp.toString());
+
+            return {
+                message: `User not verified. A verification email has been sent to ${email}.`
+            }
         }
 
         // User Activity

@@ -3,20 +3,22 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { ResendOtpDto, VerifyOtpDto } from "../dto/otp.dto";
 import { OtpType } from "@prisma";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
+import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 
 
 @Injectable()
 export class AuthOtpService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly utils: AuthUtilsService
+        private readonly utils: AuthUtilsService,
+        private readonly authMailService: AuthMailService
     ) { }
 
     async verifyOtp(dto: VerifyOtpDto, type: OtpType = OtpType.VERIFICATION) {
 
         const { email, otp } = dto
 
-        // 1. Check if user exists
+        // Check if user exists
         const user = await this.prisma.client.user.findUnique({
             where: {
                 email
@@ -26,7 +28,7 @@ export class AuthOtpService {
             throw new BadRequestException('User not found');
         }
 
-        // 2. Find latest otp for user and type
+        // Find latest otp for user and type
         const latestOtp = await this.prisma.client.userOtp.findFirst({
             where: {
                 userId: user.id,
@@ -59,7 +61,7 @@ export class AuthOtpService {
             throw new BadRequestException('Invalid OTP');
         }
 
-        // 3. Delete otp
+        // Delete otp
         await this.prisma.client.userOtp.deleteMany({
             where: {
                 userId: user.id,
@@ -67,7 +69,7 @@ export class AuthOtpService {
             }
         })
 
-        // 4. Mark user verified if verification otp
+        // Mark user verified if verification otp
         if (type === OtpType.VERIFICATION) {
             await this.prisma.client.user.update({
                 where: {
@@ -88,6 +90,7 @@ export class AuthOtpService {
     }
 
     async resendOtp({ email, type }: ResendOtpDto) {
+
         // Check if user exists
         const user = await this.prisma.client.user.findUnique({
             where: {
@@ -115,10 +118,44 @@ export class AuthOtpService {
         // Generate new OTP and hash
         const otp = await this.utils.generateOTPAndSave(user?.id, type)
 
+        // Send email
         try {
-            
+            if (type === OtpType.VERIFICATION) {
+                await this.authMailService.sendVerificationEmail(
+                    email,
+                    otp.toString(),
+                    {
+                        subject: 'Your OTP Code',
+                        message: 'Here is your OTP code. It will expire in 5 minutes.',
+                    }
+                )
+            }
+
+            if (type === OtpType.RESET_PASSWORD) {
+                await this.authMailService.sendResetPasswordEmail(
+                    email,
+                    otp.toString(),
+                    {
+                        subject: 'Your OTP Code',
+                        message: 'Here is your OTP code. It will expire in 5 minutes.',
+                    }
+                )
+            }
         } catch (error) {
             console.log(error);
+            // Clean up in case email fails
+            await this.prisma.client.userOtp.deleteMany({
+                where: {
+                    userId: user.id,
+                    type
+                }
+            })
+
+            throw new BadRequestException('Failed to send OTP email. Please try again later.');
+        }
+
+        return {
+            message: `${type} OTP sent successfully`
         }
     }
 }

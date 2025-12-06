@@ -20,7 +20,7 @@ export class VerifyOtpDto {
 
 export class ResendOtpDto {
     @ApiProperty({
-        example: 'john@gmail.com',
+        example: 'masud.softvenceomega@gmail.com',
         description: 'User email address',
     })
     @IsEmail()

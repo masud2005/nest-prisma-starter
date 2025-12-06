@@ -4,7 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthLoginService } from './services/auth-login.service';
-import { VerifyOtpDto } from './dto/otp.dto';
+import { ResendOtpDto, VerifyOtpDto } from './dto/otp.dto';
 import { AuthOtpService } from './services/auth-otp.service';
 
 @Controller('auth')
@@ -21,15 +21,21 @@ export class AuthController {
         return this.authRegisterService.register(body)
     }
 
-    @ApiOperation({summary: 'User login with email and password'})
+    @ApiOperation({ summary: 'User login with email and password' })
     @Post('login')
     async login(@Body() body: LoginDto) {
         return this.authLoginService.login(body);
     }
 
-    @ApiOperation({summary: 'Otp verify after registration'})
+    @ApiOperation({ summary: 'Otp verify after registration' })
     @Post('verify-otp')
     async verifyOtp(@Body() body: VerifyOtpDto) {
         return this.authOtpService.verifyOtp(body);
+    }
+
+    @ApiOperation({ summary: 'Resend otp' })
+    @Post('resend-otp')
+    async resentOtp(@Body() body: ResendOtpDto) {
+        return this.authOtpService.resendOtp(body);
     }
 }

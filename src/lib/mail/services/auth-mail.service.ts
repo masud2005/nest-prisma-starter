@@ -49,4 +49,26 @@ export class AuthMailService {
             `${message}\n\nVerification Code: ${safeCode}\n\nThis code will expire in 5 minutes`,
         )
     }
+
+    async sendResetPasswordEmail(
+        to: string,
+        code: string,
+        options: EmailOptions = {},
+    ): Promise<nodemailer.SentMessageInfo> {
+        const subject = this.sanitize(options.subject || 'Password Reset Code')
+        const message = this.sanitize(options.message || 'Reset your password')
+        const safeCode = this.sanitize(code)
+
+        return this.sendMail(
+            to,
+            subject,
+            otpTemplate({
+                title: 'Reset Password Code',
+                message,
+                code: safeCode,
+                footer: 'This code will expire in 5 minutes'
+            }),
+            `${message}\n\nReset Password Code: ${safeCode}\n\nThis code will expire in 5 minutes`,
+        )
+    }
 }
