@@ -4,6 +4,8 @@ import { ResendOtpDto, VerifyOtpDto } from "../dto/otp.dto";
 import { OtpType } from "@prisma";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
+import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
+import { AppError } from "@/common/exceptions/app-error";
 
 
 @Injectable()
@@ -11,7 +13,8 @@ export class AuthOtpService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly utils: AuthUtilsService,
-        private readonly authMailService: AuthMailService
+        private readonly authMailService: AuthMailService,
+        private readonly authTokenService: AuthTokenService
     ) { }
 
     async verifyOtp(dto: VerifyOtpDto, type: OtpType = OtpType.VERIFICATION) {
@@ -41,7 +44,7 @@ export class AuthOtpService {
 
         // Check if otp exists
         if (!latestOtp) {
-            throw new BadRequestException('OTP is not set. Please request a new one.');
+            throw new AppError('OTP is not set. Please request a new one.', 400);
         }
         // Check if otp is expired -> Delete this user otp
         if (latestOtp.expiresAt < new Date()) {
@@ -50,7 +53,7 @@ export class AuthOtpService {
                     id: latestOtp.id
                 }
             })
-            throw new BadRequestException('OTP expired');
+            throw new AppError('OTP expired', 400);
         }
 
         // compare otp
@@ -58,7 +61,7 @@ export class AuthOtpService {
 
         // Check if otp is valid
         if (!isOtpValid) {
-            throw new BadRequestException('Invalid OTP');
+            throw new AppError('Invalid OTP', 400);
         }
 
         // Delete otp
@@ -83,9 +86,18 @@ export class AuthOtpService {
             })
         }
 
+        // Generate token
+        const token = await this.authTokenService.generateTokenAndSave({
+            sub: user.id,
+            email: user.email,
+            role: user.role
+        })
+
         return {
             user: user,
-            message: 'OTP verified successfully'
+            message: 'OTP verified successfully',
+            statusCode: 200,
+            token: token.refreshToken
         }
     }
 
@@ -155,7 +167,8 @@ export class AuthOtpService {
         }
 
         return {
-            message: `${type} OTP sent successfully`
+            message: `${type} OTP sent successfully`,
+            statusCode: 200
         }
     }
 }

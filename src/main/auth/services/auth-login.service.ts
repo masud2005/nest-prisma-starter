@@ -6,13 +6,15 @@ import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 import { sendResponse } from "@/common/response/sendResponse";
 import { errorResponse } from "@/common/response/errorResponse";
 import { AppError } from "@/common/exceptions/app-error";
+import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
 
 @Injectable()
 export class AuthLoginService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly utils: AuthUtilsService,
-        private readonly authMailService: AuthMailService
+        private readonly authMailService: AuthMailService,
+        private readonly authTokenService: AuthTokenService
     ) { }
 
     async login(dto: LoginDto) {
@@ -56,18 +58,28 @@ export class AuthLoginService {
             }
         })
 
+        // Generate token
+        const token = await this.authTokenService.generateTokenAndSave({
+            sub: updatedUser.id,
+            email: updatedUser.email,
+            role: updatedUser.role
+        })
 
-        // return {
-        //     data: updatedUser,
-        //     message: 'User logged in successfully',
-        //     statusCode: 200
-        // }
-        return sendResponse(
-            updatedUser,
-            {
-                message: 'User logged in successfully',
-                statusCode: 200,
-            }
-        );
+        console.log(token);
+
+
+        return {
+            data: updatedUser,
+            message: 'User logged in successfully',
+            statusCode: 200,
+            token: token.refreshToken
+        }
+        // return sendResponse(
+        //     updatedUser,
+        //     {
+        //         message: 'User logged in successfully',
+        //         statusCode: 200,
+        //     }
+        // );
     }
 }

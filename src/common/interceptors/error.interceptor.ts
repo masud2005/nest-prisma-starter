@@ -48,7 +48,7 @@ export class ErrorInterceptor implements NestInterceptor {
                             ? response
                             : (response as any).message || message;
                 }
-                
+
                 return throwError(() =>
                     errorResponse(message, statusCode, error.stack),
                 );
