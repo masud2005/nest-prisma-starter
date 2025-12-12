@@ -65,21 +65,12 @@ export class AuthLoginService {
             role: updatedUser.role
         })
 
-        console.log(token);
-
-
-        return {
-            data: updatedUser,
-            message: 'User logged in successfully',
-            statusCode: 200,
-            token: token.refreshToken
-        }
-        // return sendResponse(
-        //     updatedUser,
-        //     {
-        //         message: 'User logged in successfully',
-        //         statusCode: 200,
-        //     }
-        // );
+        return sendResponse(
+            { ...updatedUser, token: token.refreshToken },
+            {
+                message: 'User logged in successfully',
+                statusCode: 200,
+            }
+        );
     }
 }

@@ -6,6 +6,7 @@ import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
 import { AppError } from "@/common/exceptions/app-error";
+import { sendResponse } from "@/common/response/sendResponse";
 
 
 @Injectable()
@@ -93,12 +94,13 @@ export class AuthOtpService {
             role: user.role
         })
 
-        return {
-            user: user,
-            message: 'OTP verified successfully',
-            statusCode: 200,
-            token: token.refreshToken
-        }
+        return sendResponse(
+            { ...user, token: token.refreshToken },
+            {
+                message: 'OTP verified successfully',
+                statusCode: 200,
+            }
+        );
     }
 
     async resendOtp({ email, type }: ResendOtpDto) {
@@ -166,9 +168,12 @@ export class AuthOtpService {
             throw new BadRequestException('Failed to send OTP email. Please try again later.');
         }
 
-        return {
-            message: `${type} OTP sent successfully`,
-            statusCode: 200
-        }
+        return sendResponse(
+            null,
+            {
+                message: `${type} OTP sent successfully`,
+                statusCode: 200
+            }
+        );
     }
 }
