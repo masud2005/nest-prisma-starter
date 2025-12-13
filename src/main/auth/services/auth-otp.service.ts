@@ -95,7 +95,10 @@ export class AuthOtpService {
         })
 
         return sendResponse(
-            { ...user, token: token.refreshToken },
+            {
+                ...user,
+                token
+            },
             {
                 message: 'OTP verified successfully',
                 statusCode: 200,

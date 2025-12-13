@@ -3,6 +3,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { RegisterDto } from "../dto/register.dto";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
+import { sendResponse } from "@/common/response/sendResponse";
 
 @Injectable()
 export class AuthRegisterService {
@@ -48,9 +49,13 @@ export class AuthRegisterService {
             }
         )
 
-        return {
-            email: newUser.email,
-            message: `Registration successful. A verification email has been sent to ${newUser.email}.`
-        }
+        return sendResponse(
+            {
+                email: newUser.email,
+            },
+            {
+                message: `Registration successful. A verification email has been sent to ${newUser.email}.`
+            }
+        )
     }
 }

@@ -66,7 +66,10 @@ export class AuthLoginService {
         })
 
         return sendResponse(
-            { ...updatedUser, token: token.refreshToken },
+            {
+                user: updatedUser,
+                token
+            },
             {
                 message: 'User logged in successfully',
                 statusCode: 200,
