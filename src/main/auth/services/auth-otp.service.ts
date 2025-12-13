@@ -94,6 +94,8 @@ export class AuthOtpService {
             role: user.role
         })
 
+        delete (user as any).password;
+
         return sendResponse(
             {
                 ...user,

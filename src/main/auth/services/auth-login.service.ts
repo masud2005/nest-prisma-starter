@@ -58,6 +58,8 @@ export class AuthLoginService {
             }
         })
 
+        delete (updatedUser as any).password;
+
         // Generate token
         const token = await this.authTokenService.generateTokenAndSave({
             sub: updatedUser.id,
