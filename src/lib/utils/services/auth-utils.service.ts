@@ -36,4 +36,16 @@ export class AuthUtilsService {
     async compare(value: string, hash: string): Promise<boolean> {
         return await bcrypt.compare(value, hash);
     }
+
+    async findRefreshToken(token: string) {
+        return this.prisma.client.refreshToken.findUnique({ where: { token } });
+    }
+
+    async revokeRefreshToken(token: string) {
+        await this.prisma.client.refreshToken.deleteMany({ where: { token } });
+    }
+
+    async revokeAllRefreshTokensForUser(userId: string) {
+        await this.prisma.client.refreshToken.deleteMany({ where: { userId } });
+    }
 }

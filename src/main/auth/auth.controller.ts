@@ -11,14 +11,17 @@ import { AuthLoginService } from './services/auth-login.service';
 import { AuthOtpService } from './services/auth-otp.service';
 import { AuthRegisterService } from './services/auth-register.service';
 import { Role } from '@prisma';
+import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
+import { AuthLogoutService } from './services/auth-logout.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authRegisterService: AuthRegisterService,
     private readonly authLoginService: AuthLoginService,
+    private readonly authLogoutService: AuthLogoutService,
     private readonly authOtpService: AuthOtpService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'User regigtration with email and password' })
   @Post('register')
@@ -42,6 +45,20 @@ export class AuthController {
   @Post('resend-otp')
   async resentOtp(@Body() body: ResendOtpDto) {
     return this.authOtpService.resendOtp(body);
+  }
+
+  @ApiOperation({ summary: 'User logout' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async logout(@User() user: CurrentUser, @Body() body: LogoutDto) {
+    return this.authLogoutService.logout(user, body);
+  }
+
+  @ApiOperation({summary: "Refresh token"})
+  @Post('refresh-token')
+  async refreshToken(@Body() dto: RefreshTokenDto) {
+    return this.authLogoutService.refreshAccessToken(dto);
   }
 
   @ApiOperation({
