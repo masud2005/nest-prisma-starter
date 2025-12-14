@@ -11,7 +11,7 @@ interface EmailOptions {
 
 @Injectable()
 export class AuthMailService {
-  constructor(private readonly mailService: MailService) {}
+  constructor(private readonly mailService: MailService) { }
 
   private async sendMail(
     to: string,
@@ -61,12 +61,12 @@ export class AuthMailService {
       to,
       subject,
       otpTemplate({
-        title: 'Reset Password Code',
+        title: 'Password Reset Code',
         message,
         code: safeCode,
         footer: 'This code will expire in 5 minutes',
       }),
-      `${message}\n\nReset Password Code: ${safeCode}\n\nThis code will expire in 5 minutes`,
+      `${message}\n\nPassword Reset Code: ${safeCode}\n\nThis code will expire in 5 minutes`,
     );
   }
 }

@@ -14,7 +14,7 @@ export const otpTemplate = ({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTP Verification</title>
+  <title>${title}</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; line-height: 1.6; color: #333;">
   <div role="article" aria-roledescription="email" lang="en" style="background-color: #f8f9fa; padding: 20px;">
@@ -23,7 +23,7 @@ export const otpTemplate = ({
         <td style="padding: 20px 0;">
           <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); overflow: hidden; border: 1px solid #e9ecef;">
             
-            <!-- Header with Logo/Brand -->
+            <!-- Header -->
             <tr>
               <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 40px; text-align: center;">
                 <h1 style="margin: 0; font-size: 28px; color: #ffffff; font-weight: 600; letter-spacing: 1px;">
@@ -36,7 +36,7 @@ export const otpTemplate = ({
             <tr>
               <td style="padding: 40px;">
                 
-                <!-- Greeting/Message -->
+                <!-- Message -->
                 <p style="font-size: 16px; color: #495057; margin: 0 0 24px 0; text-align: center;">
                   ${message}
                 </p>
