@@ -1,11 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthRegisterService } from './services/auth-register.service';
-import { ApiOperation } from '@nestjs/swagger';
-import { RegisterDto } from './dto/register.dto';
+import { Roles } from '@/common/jwt/roles.decorator';
+import { RolesGuard } from '@/common/jwt/roles.guard';
+import { CurrentUser, User } from '@/common/jwt/user.decorator';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
-import { AuthLoginService } from './services/auth-login.service';
 import { ResendOtpDto, VerifyOtpDto } from './dto/otp.dto';
+import { RegisterDto } from './dto/register.dto';
+import { AuthLoginService } from './services/auth-login.service';
 import { AuthOtpService } from './services/auth-otp.service';
+import { AuthRegisterService } from './services/auth-register.service';
+import { Role } from '@prisma';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +42,38 @@ export class AuthController {
     @Post('resend-otp')
     async resentOtp(@Body() body: ResendOtpDto) {
         return this.authOtpService.resendOtp(body);
+    }
+
+    @ApiOperation({ summary: 'Admin only endpoint - for testing JWT with role-based access' })
+    @ApiBearerAuth()
+    @Get('admin')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    adminOnly(@User() user: CurrentUser) {
+        return {
+            message: 'This is for admins only. Testing purpose...',
+            user: {
+                userId: user.userId,
+                email: user.email,
+                role: user.role
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    @ApiOperation({ summary: 'Protected endpoint - for testing JWT authentication' })
+    @ApiBearerAuth()
+    @Get('protected')
+    @UseGuards(AuthGuard('jwt'))
+    protectedRoute(@User() user: CurrentUser) {
+        return {
+            message: 'Any logged in user can access this. Testing purpose...',
+            user: {
+                userId: user.userId,
+                email: user.email,
+                role: user.role
+            },
+            timestamp: new Date().toISOString()
+        };
     }
 }

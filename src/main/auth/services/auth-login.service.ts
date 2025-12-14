@@ -1,12 +1,11 @@
-import { PrismaService } from "@/lib/prisma/prisma.service";
-import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { LoginDto } from "../dto/login.dto";
-import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
-import { sendResponse } from "@/common/response/sendResponse";
-import { errorResponse } from "@/common/response/errorResponse";
 import { AppError } from "@/common/exceptions/app-error";
+import { sendResponse } from "@/common/response/sendResponse";
+import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
+import { PrismaService } from "@/lib/prisma/prisma.service";
 import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
+import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
+import { Injectable } from "@nestjs/common";
+import { LoginDto } from "../dto/login.dto";
 
 @Injectable()
 export class AuthLoginService {

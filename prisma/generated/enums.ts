@@ -17,13 +17,13 @@ export const OtpType = {
 export type OtpType = (typeof OtpType)[keyof typeof OtpType]
 
 
-export const UserRole = {
+export const Role = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
   USER: 'USER'
 } as const
 
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+export type Role = (typeof Role)[keyof typeof Role]
 
 
 export const UserStatus = {

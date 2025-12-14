@@ -7,7 +7,7 @@ model User {
     password String
 
     // Settings
-    role       UserRole   @default(USER)
+    role       Role   @default(USER)
     status     UserStatus @default(ACTIVE)
     isVerified Boolean    @default(false)
 
@@ -28,7 +28,7 @@ model User {
     @@map("users")
 }
 
-enum UserRole {
+enum Role {
     SUPER_ADMIN
     ADMIN
     USER

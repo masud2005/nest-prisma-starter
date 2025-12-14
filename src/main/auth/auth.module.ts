@@ -9,6 +9,6 @@ import { AuthOtpService } from './services/auth-otp.service';
 @Module({
   imports: [UtilsModule, MailModule],
   controllers: [AuthController],
-  providers: [AuthRegisterService, AuthLoginService, AuthOtpService]
+  providers: [AuthRegisterService, AuthLoginService, AuthOtpService],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -1,12 +1,12 @@
 import { PrismaService } from "@/lib/prisma/prisma.service";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ResendOtpDto, VerifyOtpDto } from "../dto/otp.dto";
-import { OtpType } from "@prisma";
 import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
 import { AuthMailService } from "@/lib/mail/services/auth-mail.service";
 import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
 import { AppError } from "@/common/exceptions/app-error";
 import { sendResponse } from "@/common/response/sendResponse";
+import { OtpType } from "@prisma";
 
 
 @Injectable()
@@ -73,9 +73,10 @@ export class AuthOtpService {
             }
         })
 
+        let updatedUser = user;
         // Mark user verified if verification otp
         if (type === OtpType.VERIFICATION) {
-            await this.prisma.client.user.update({
+            updatedUser = await this.prisma.client.user.update({
                 where: {
                     id: user.id
                 },
@@ -89,16 +90,16 @@ export class AuthOtpService {
 
         // Generate token
         const token = await this.authTokenService.generateTokenAndSave({
-            sub: user.id,
-            email: user.email,
-            role: user.role
+            sub: updatedUser.id,
+            email: updatedUser.email,
+            role: updatedUser.role
         })
 
-        delete (user as any).password;
+        const { password, ...userWithoutPassword } = updatedUser;
 
         return sendResponse(
             {
-                ...user,
+                user: userWithoutPassword,
                 token
             },
             {

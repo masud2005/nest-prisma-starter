@@ -1,6 +1,7 @@
 import { PrismaService } from "@/lib/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 export interface JwtPayload {
     sub: string;
@@ -16,13 +17,14 @@ export class AuthTokenService {
 
     constructor(
         private readonly prisma: PrismaService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService
     ) { }
 
     async generateToken(payload: JwtPayload) {
         const token = this.jwtService.sign(payload, {
-            secret: process.env.JWT_SECRET,
-            expiresIn: '1d'
+            secret: this.configService.getOrThrow('JWT_SECRET'),
+            expiresIn: this.configService.getOrThrow('JWT_EXPIRES_IN')
         });
         return token
     }

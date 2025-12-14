@@ -3,14 +3,18 @@ import { AppService } from './app.service';
 import { MainModule } from './main/main.module';
 import { LibModule } from './lib/lib.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { GlobalJwtModule } from './common/jwt/jwt.module';
 
 @Module({
   imports: [  
     ConfigModule.forRoot({
       isGlobal: true,
-    }), 
-    MainModule, LibModule],
+    }),
+    GlobalJwtModule,
+    MainModule, 
+    LibModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
