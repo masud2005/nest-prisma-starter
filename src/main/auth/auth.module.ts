@@ -11,4 +11,4 @@ import { AuthOtpService } from './services/auth-otp.service';
   controllers: [AuthController],
   providers: [AuthRegisterService, AuthLoginService, AuthOtpService],
 })
-export class AuthModule { }
+export class AuthModule {}

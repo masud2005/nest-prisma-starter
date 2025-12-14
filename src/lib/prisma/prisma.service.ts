@@ -15,9 +15,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   private readonly connectionString: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.connectionString = this.configService.getOrThrow<string>(
-      'DATABASE_URL',
-    );
+    this.connectionString =
+      this.configService.getOrThrow<string>('DATABASE_URL');
 
     const adapter = new PrismaPg({ connectionString: this.connectionString });
 

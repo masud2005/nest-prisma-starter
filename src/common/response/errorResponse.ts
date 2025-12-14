@@ -1,7 +1,7 @@
 export const errorResponse = (
   message: string | string[],
   statusCode: number,
-  errors?: any
+  errors?: any,
 ) => {
   return {
     success: false,

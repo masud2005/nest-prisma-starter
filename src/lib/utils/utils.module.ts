@@ -4,6 +4,6 @@ import { AuthTokenService } from './services/auth-token.service';
 
 @Module({
   providers: [AuthUtilsService, AuthTokenService],
-  exports: [AuthUtilsService, AuthTokenService]
+  exports: [AuthUtilsService, AuthTokenService],
 })
-export class UtilsModule {}
+export class UtilsModule { }

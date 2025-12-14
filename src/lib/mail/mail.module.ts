@@ -6,6 +6,6 @@ import { AuthMailService } from './services/auth-mail.service';
 @Module({
   imports: [ConfigModule],
   providers: [MailService, AuthMailService],
-  exports: [AuthMailService]
+  exports: [AuthMailService],
 })
-export class MailModule {}
+export class MailModule { }

@@ -14,66 +14,70 @@ import { Role } from '@prisma';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authRegisterService: AuthRegisterService,
-        private readonly authLoginService: AuthLoginService,
-        private readonly authOtpService: AuthOtpService
-    ) { }
+  constructor(
+    private readonly authRegisterService: AuthRegisterService,
+    private readonly authLoginService: AuthLoginService,
+    private readonly authOtpService: AuthOtpService,
+  ) {}
 
-    @ApiOperation({ summary: 'User regigtration with email and password' })
-    @Post('register')
-    async register(@Body() body: RegisterDto) {
-        return this.authRegisterService.register(body)
-    }
+  @ApiOperation({ summary: 'User regigtration with email and password' })
+  @Post('register')
+  async register(@Body() body: RegisterDto) {
+    return this.authRegisterService.register(body);
+  }
 
-    @ApiOperation({ summary: 'User login with email and password' })
-    @Post('login')
-    async login(@Body() body: LoginDto) {
-        return this.authLoginService.login(body);
-    }
+  @ApiOperation({ summary: 'User login with email and password' })
+  @Post('login')
+  async login(@Body() body: LoginDto) {
+    return this.authLoginService.login(body);
+  }
 
-    @ApiOperation({ summary: 'Otp verify after registration' })
-    @Post('verify-otp')
-    async verifyOtp(@Body() body: VerifyOtpDto) {
-        return this.authOtpService.verifyOtp(body);
-    }
+  @ApiOperation({ summary: 'Otp verify after registration' })
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: VerifyOtpDto) {
+    return this.authOtpService.verifyOtp(body);
+  }
 
-    @ApiOperation({ summary: 'Resend otp' })
-    @Post('resend-otp')
-    async resentOtp(@Body() body: ResendOtpDto) {
-        return this.authOtpService.resendOtp(body);
-    }
+  @ApiOperation({ summary: 'Resend otp' })
+  @Post('resend-otp')
+  async resentOtp(@Body() body: ResendOtpDto) {
+    return this.authOtpService.resendOtp(body);
+  }
 
-    @ApiOperation({ summary: 'Admin only endpoint - for testing JWT with role-based access' })
-    @ApiBearerAuth()
-    @Get('admin')
-    @Roles(Role.ADMIN)
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    adminOnly(@User() user: CurrentUser) {
-        return {
-            message: 'This is for admins only. Testing purpose...',
-            user: {
-                userId: user.userId,
-                email: user.email,
-                role: user.role
-            },
-            timestamp: new Date().toISOString()
-        };
-    }
+  @ApiOperation({
+    summary: 'Admin only endpoint - for testing JWT with role-based access',
+  })
+  @ApiBearerAuth()
+  @Get('admin')
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  adminOnly(@User() user: CurrentUser) {
+    return {
+      message: 'This is for admins only. Testing purpose...',
+      user: {
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+      },
+      timestamp: new Date().toISOString(),
+    };
+  }
 
-    @ApiOperation({ summary: 'Protected endpoint - for testing JWT authentication' })
-    @ApiBearerAuth()
-    @Get('protected')
-    @UseGuards(AuthGuard('jwt'))
-    protectedRoute(@User() user: CurrentUser) {
-        return {
-            message: 'Any logged in user can access this. Testing purpose...',
-            user: {
-                userId: user.userId,
-                email: user.email,
-                role: user.role
-            },
-            timestamp: new Date().toISOString()
-        };
-    }
+  @ApiOperation({
+    summary: 'Protected endpoint - for testing JWT authentication',
+  })
+  @ApiBearerAuth()
+  @Get('protected')
+  @UseGuards(AuthGuard('jwt'))
+  protectedRoute(@User() user: CurrentUser) {
+    return {
+      message: 'Any logged in user can access this. Testing purpose...',
+      user: {
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+      },
+      timestamp: new Date().toISOString(),
+    };
+  }
 }

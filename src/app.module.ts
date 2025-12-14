@@ -7,13 +7,13 @@ import { ConfigModule } from '@nestjs/config';
 import { GlobalJwtModule } from './common/jwt/jwt.module';
 
 @Module({
-  imports: [  
+  imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     GlobalJwtModule,
-    MainModule, 
-    LibModule
+    MainModule,
+    LibModule,
   ],
   controllers: [AppController],
   providers: [AppService],

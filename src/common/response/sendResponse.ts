@@ -8,7 +8,7 @@ export const sendResponse = (
       limit: number;
       total: number;
     };
-  }
+  },
 ) => {
   const message = options?.message ?? 'Request Success';
   const statusCode = options?.statusCode ?? 200;
@@ -24,7 +24,7 @@ export const sendResponse = (
         limit: options.pagination.limit,
         total: options.pagination.total,
         totalPage: Math.ceil(
-          options.pagination.total / options.pagination.limit
+          options.pagination.total / options.pagination.limit,
         ),
       },
     }),

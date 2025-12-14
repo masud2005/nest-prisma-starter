@@ -7,14 +7,12 @@ import { randomInt } from 'node:crypto';
 @Injectable()
 export class AuthUtilsService {
     private saltRounds = 10;
-    constructor(
-        private readonly prisma: PrismaService
-    ) { }
+    constructor(private readonly prisma: PrismaService) { }
 
     generateOtpAndExpiry(minutes = 5) {
         const otp = randomInt(100000, 999999);
         const expiryTime = new Date(Date.now() + minutes * 60 * 1000);
-        return { otp, expiryTime }
+        return { otp, expiryTime };
     }
 
     async generateOTPAndSave(userId: string, type: OtpType) {
@@ -32,10 +30,10 @@ export class AuthUtilsService {
     }
 
     async hash(value: string): Promise<string> {
-        return await bcrypt.hash(value, this.saltRounds)
+        return await bcrypt.hash(value, this.saltRounds);
     }
 
     async compare(value: string, hash: string): Promise<boolean> {
-        return await bcrypt.compare(value, hash)
+        return await bcrypt.compare(value, hash);
     }
 }
