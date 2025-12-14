@@ -22,7 +22,7 @@ export class AuthLogoutService {
         const tokenRecord = await this.utils.findRefreshToken(dto.refreshToken);
 
         if (!tokenRecord || tokenRecord.userId !== user?.userId) {
-            throw new AppError('Invalid refresh token', 400);
+            throw new AppError(400, 'Invalid refresh token');
         }
 
         // Delete the provided refresh token (logout)
@@ -36,13 +36,13 @@ export class AuthLogoutService {
         const tokenRecord = await this.utils.findRefreshToken(dto.refreshToken);
 
         if (!tokenRecord) {
-            throw new AppError('Invalid or expired refresh token ', 400);
+            throw new AppError(400, 'Invalid or expired refresh token ');
         }
 
         // check if token is expired
         if (tokenRecord.expiresAt < new Date()) {
             await this.utils.revokeRefreshToken(dto.refreshToken);
-            throw new AppError('Refresh token is expired', 400);
+            throw new AppError(400, 'Refresh token is expired');
         }
 
         // Get user info
@@ -52,7 +52,7 @@ export class AuthLogoutService {
 
         if (!user) {
             await this.utils.revokeRefreshToken(dto.refreshToken);
-            throw new AppError('User not found', 400);
+            throw new AppError(400, 'User not found');
         }
 
         // Revoke old refresh token 

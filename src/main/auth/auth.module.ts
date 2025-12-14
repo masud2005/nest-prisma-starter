@@ -6,10 +6,11 @@ import { AuthLoginService } from './services/auth-login.service';
 import { MailModule } from '@/lib/mail/mail.module';
 import { AuthOtpService } from './services/auth-otp.service';
 import { AuthLogoutService } from './services/auth-logout.service';
+import { AuthPasswordService } from './services/auth-password.service';
 
 @Module({
   imports: [UtilsModule, MailModule],
   controllers: [AuthController],
-  providers: [AuthRegisterService, AuthLoginService, AuthOtpService, AuthLogoutService],
+  providers: [AuthRegisterService, AuthLoginService, AuthOtpService, AuthLogoutService, AuthPasswordService],
 })
-export class AuthModule {}
+export class AuthModule { }

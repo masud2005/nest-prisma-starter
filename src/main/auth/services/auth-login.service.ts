@@ -14,7 +14,7 @@ export class AuthLoginService {
     private readonly utils: AuthUtilsService,
     private readonly authMailService: AuthMailService,
     private readonly authTokenService: AuthTokenService,
-  ) {}
+  ) { }
 
   async login(dto: LoginDto) {
     const { email, password } = dto;
@@ -26,13 +26,13 @@ export class AuthLoginService {
     });
 
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError(404, 'User not found');
     }
 
     const isPasswordMatch = await this.utils.compare(password, user.password);
 
     if (!isPasswordMatch) {
-      throw new AppError('Invalid credentials', 401);
+      throw new AppError(401, 'Invalid credentials');
     }
 
     // User not verified

@@ -43,7 +43,7 @@ export class AuthOtpService {
 
     // Check if otp exists
     if (!latestOtp) {
-      throw new AppError('OTP is not set. Please request a new one.', 400);
+      throw new AppError(400, 'OTP is not set. Please request a new one.');
     }
     // Check if otp is expired -> Delete this user otp
     if (latestOtp.expiresAt < new Date()) {
@@ -52,7 +52,7 @@ export class AuthOtpService {
           id: latestOtp.id,
         },
       });
-      throw new AppError('OTP expired', 400);
+      throw new AppError(400, 'OTP expired');
     }
 
     // compare otp
@@ -60,7 +60,7 @@ export class AuthOtpService {
 
     // Check if otp is valid
     if (!isOtpValid) {
-      throw new AppError('Invalid OTP', 400);
+      throw new AppError(400, 'Invalid OTP');
     }
 
     // Delete otp

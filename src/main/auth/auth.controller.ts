@@ -13,6 +13,8 @@ import { AuthRegisterService } from './services/auth-register.service';
 import { Role } from '@prisma';
 import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
 import { AuthLogoutService } from './services/auth-logout.service';
+import { PasswordDto } from './dto/password.dto';
+import { AuthPasswordService } from './services/auth-password.service';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +23,7 @@ export class AuthController {
     private readonly authLoginService: AuthLoginService,
     private readonly authLogoutService: AuthLogoutService,
     private readonly authOtpService: AuthOtpService,
+    private readonly authPasswordService: AuthPasswordService
   ) { }
 
   @ApiOperation({ summary: 'User regigtration with email and password' })
@@ -55,10 +58,18 @@ export class AuthController {
     return this.authLogoutService.logout(user, body);
   }
 
-  @ApiOperation({summary: "Refresh token"})
+  @ApiOperation({ summary: "Refresh token" })
   @Post('refresh-token')
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authLogoutService.refreshAccessToken(dto);
+  }
+
+  @ApiOperation({ summary: "Change password" })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('change-password')
+  async changePassword(@User() user: CurrentUser, @Body() dto: PasswordDto) {
+    return this.authPasswordService.changePassword(user, dto);
   }
 
   @ApiOperation({
