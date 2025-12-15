@@ -13,7 +13,7 @@ import { AuthRegisterService } from './services/auth-register.service';
 import { Role } from '@prisma';
 import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
 import { AuthLogoutService } from './services/auth-logout.service';
-import { ForgotPasswordDto, PasswordDto, ResetPasswordDto,  } from './dto/password.dto';
+import { ForgotPasswordDto, PasswordDto, ResetPasswordDto, } from './dto/password.dto';
 import { AuthPasswordService } from './services/auth-password.service';
 
 @Controller('auth')
@@ -50,14 +50,6 @@ export class AuthController {
     return this.authOtpService.resendOtp(body);
   }
 
-  @ApiOperation({ summary: 'User logout' })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @Post('logout')
-  async logout(@User() user: CurrentUser, @Body() body: LogoutDto) {
-    return this.authLogoutService.logout(user, body);
-  }
-
   @ApiOperation({ summary: "Refresh token" })
   @Post('refresh-token')
   async refreshToken(@Body() dto: RefreshTokenDto) {
@@ -82,6 +74,14 @@ export class AuthController {
   @Post('reset-password')
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authPasswordService.resetPassword(dto);
+  }
+
+  @ApiOperation({ summary: 'User logout' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async logout(@User() user: CurrentUser, @Body() body: LogoutDto) {
+    return this.authLogoutService.logout(user, body);
   }
 
   @ApiOperation({
