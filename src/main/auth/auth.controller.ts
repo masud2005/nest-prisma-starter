@@ -13,7 +13,7 @@ import { AuthRegisterService } from './services/auth-register.service';
 import { Role } from '@prisma';
 import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
 import { AuthLogoutService } from './services/auth-logout.service';
-import { PasswordDto } from './dto/password.dto';
+import { ForgotPasswordDto, PasswordDto, ResetPasswordDto,  } from './dto/password.dto';
 import { AuthPasswordService } from './services/auth-password.service';
 
 @Controller('auth')
@@ -70,6 +70,18 @@ export class AuthController {
   @Post('change-password')
   async changePassword(@User() user: CurrentUser, @Body() dto: PasswordDto) {
     return this.authPasswordService.changePassword(user, dto);
+  }
+
+  @ApiOperation({ summary: "Forgot password" })
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authPasswordService.forgotPassword(dto.email);
+  }
+
+  @ApiOperation({ summary: "Reset password" })
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authPasswordService.resetPassword(dto);
   }
 
   @ApiOperation({
