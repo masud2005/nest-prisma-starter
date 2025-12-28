@@ -4,17 +4,17 @@ import { CurrentUser, User } from '@/common/jwt/user.decorator';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Role } from '@prisma';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
 import { ResendOtpDto, VerifyOtpDto } from './dto/otp.dto';
+import { ForgotPasswordDto, PasswordDto, ResetPasswordDto, } from './dto/password.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthLoginService } from './services/auth-login.service';
-import { AuthOtpService } from './services/auth-otp.service';
-import { AuthRegisterService } from './services/auth-register.service';
-import { Role } from '@prisma';
-import { LogoutDto, RefreshTokenDto } from './dto/logout.dto';
 import { AuthLogoutService } from './services/auth-logout.service';
-import { ForgotPasswordDto, PasswordDto, ResetPasswordDto, } from './dto/password.dto';
+import { AuthOtpService } from './services/auth-otp.service';
 import { AuthPasswordService } from './services/auth-password.service';
+import { AuthRegisterService } from './services/auth-register.service';
 
 @Controller('auth')
 export class AuthController {

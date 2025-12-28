@@ -1,12 +1,11 @@
-import { PrismaService } from "@/lib/prisma/prisma.service";
-import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
-import { Injectable } from "@nestjs/common";
-import { LogoutDto, RefreshTokenDto } from "../dto/logout.dto";
 import { AppError } from "@/common/exceptions/app-error";
 import { CurrentUser } from "@/common/jwt/user.decorator";
 import { sendResponse } from "@/common/response/sendResponse";
-import { RefreshToken } from "@prisma";
+import { PrismaService } from "@/lib/prisma/prisma.service";
 import { AuthTokenService } from "@/lib/utils/services/auth-token.service";
+import { AuthUtilsService } from "@/lib/utils/services/auth-utils.service";
+import { Injectable } from "@nestjs/common";
+import { LogoutDto, RefreshTokenDto } from "../dto/logout.dto";
 
 @Injectable()
 export class AuthLogoutService {
